@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProjectRole {
+  Admin
+  Member
+}
+
+// Prisma doesn't allow spaces in enums directly, so we use @map to match the blueprint's exact SQL strings
+enum TaskStatus {
+  TODO        @map("To Do")
+  IN_PROGRESS @map("In Progress")
+  DONE        @map("Done")
+}
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String   @unique @db.VarChar(255)
+  password_hash String   @db.VarChar(255)
+  name          String   @db.VarChar(100)
+  created_at    DateTime @default(now()) @db.Timestamptz
+  updated_at    DateTime @default(now()) @updatedAt @db.Timestamptz
+
+  projects_created Project[]       @relation("ProjectCreator")
+  tasks_assigned   Task[]          @relation("TaskAssignee")
+  memberships      ProjectMember[]
+
+  @@map("Users")
+}
+
+model Project {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  created_by  String   @db.Uuid
+  created_at  DateTime @default(now()) @db.Timestamptz
+
+  creator User            @relation("ProjectCreator", fields: [created_by], references: [id], onDelete: Restrict)
+  members ProjectMember[]
+  tasks   Task[]
+
+  @@map("Projects")
+}
+
+model ProjectMember {
+  project_id String      @db.Uuid
+  user_id    String      @db.Uuid
+  role       ProjectRole @default(Member)
+  joined_at  DateTime    @default(now()) @db.Timestamptz
+
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([project_id, user_id])
+  @@index([user_id])
+  @@map("ProjectMembers")
+}
+
+model Task {
+  id          String     @id @default(uuid()) @db.Uuid
+  project_id  String     @db.Uuid
+  title       String     @db.VarChar(255)
+  description String?    @db.Text
+  status      TaskStatus @default(TODO)
+  assignee_id String?    @db.Uuid
+  due_date    DateTime   @db.Timestamptz
+  created_at  DateTime   @default(now()) @db.Timestamptz
+
+  project  Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  assignee User?   @relation("TaskAssignee", fields: [assignee_id], references: [id], onDelete: SetNull)
+
+  @@index([project_id])
+  @@index([assignee_id])
+  @@index([due_date])
+  @@map("Tasks")
+}
