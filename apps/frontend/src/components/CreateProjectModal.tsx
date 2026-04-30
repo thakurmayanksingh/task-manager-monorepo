@@ -30,33 +30,47 @@ export const CreateProjectModal = ({ isOpen, onClose, onSuccess }: CreateProject
     };
 
     return (
-        <div style={{
-            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
-            alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-            <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', width: '400px' }}>
-                <h2>Create New Project</h2>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '15px' }}>
-                    <input 
-                        type="text" 
-                        placeholder="Project Name" 
-                        value={name} 
-                        onChange={(e) => setName(e.target.value)} 
-                        required 
-                        style={{ padding: '10px' }}
-                    />
-                    <textarea 
-                        placeholder="Description (Optional)" 
-                        value={description} 
-                        onChange={(e) => setDescription(e.target.value)} 
-                        style={{ padding: '10px', minHeight: '80px' }}
-                    />
-                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                        <button type="button" onClick={onClose} style={{ padding: '8px 15px', cursor: 'pointer' }}>Cancel</button>
-                        <button type="submit" style={{ padding: '8px 15px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+        <div className="modalOverlay" role="presentation">
+            <div className="modal card" role="dialog" aria-modal="true" aria-label="Create new project">
+                <div className="modalHeader">
+                    <h2 className="h2">Create project</h2>
+                    <button type="button" onClick={onClose} className="btn btn--ghost btn--sm" aria-label="Close">
+                        Close
+                    </button>
+                </div>
+
+                {error && <p className="modalError" role="alert">{error}</p>}
+
+                <form onSubmit={handleSubmit} className="modalForm">
+                    <div className="field">
+                        <label className="label" htmlFor="newProjectName">Project name</label>
+                        <input
+                            id="newProjectName"
+                            type="text"
+                            placeholder="e.g. Q3 Roadmap"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            className="input"
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label className="label" htmlFor="newProjectDesc">Description</label>
+                        <textarea
+                            id="newProjectDesc"
+                            placeholder="Optional"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="textarea"
+                        />
+                    </div>
+
+                    <div className="modalActions">
+                        <button type="button" onClick={onClose} className="btn btn--ghost">
+                            Cancel
+                        </button>
+                        <button type="submit" className="btn btn--primary">
                             Create
                         </button>
                     </div>

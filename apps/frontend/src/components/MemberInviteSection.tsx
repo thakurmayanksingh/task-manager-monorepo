@@ -33,36 +33,47 @@ export const MemberInviteSection = ({ projectId, onMemberAdded }: MemberInviteSe
     };
 
     return (
-        <div style={{ marginTop: '30px', padding: '20px', backgroundColor: '#fdfdfd', border: '1px dashed #ccc', borderRadius: '8px' }}>
-            <h3>Invite Teammate</h3>
-            <form onSubmit={handleInvite} style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <input 
-                    type="email" 
-                    placeholder="User Email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                    required 
-                    style={{ flex: 1, padding: '8px' }}
-                />
-                <select 
-                    value={role} 
-                    onChange={(e) => setRole(e.target.value as 'Admin' | 'Member')}
-                    style={{ padding: '8px' }}
-                >
-                    <option value="Member">Member</option>
-                    <option value="Admin">Admin</option>
-                </select>
-                <button 
-                    type="submit" 
-                    disabled={loading}
-                    style={{ padding: '8px 15px', backgroundColor: '#17a2b8', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                    Add
-                </button>
+        <section className="inviteCard">
+            <header className="inviteHeader">
+                <div>
+                    <h3 className="h2">Invite teammate</h3>
+                    <p className="muted small">Add someone who already has an account.</p>
+                </div>
+            </header>
+
+            <form onSubmit={handleInvite} className="inviteForm">
+                <div className="field">
+                    <label className="label" htmlFor="inviteEmail">Email</label>
+                    <input
+                        id="inviteEmail"
+                        type="email"
+                        placeholder="teammate@company.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="input"
+                    />
+                </div>
+
+                <div className="field">
+                    <label className="label" htmlFor="inviteRole">Role</label>
+                    <select
+                        id="inviteRole"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value as 'Admin' | 'Member')}
+                        className="select"
+                    >
+                        <option value="Member">Member</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+
+                <div className="inviteActions">
+                    <button type="submit" disabled={loading} className="btn btn--primary">
+                        {loading ? 'Adding…' : 'Add member'}
+                    </button>
+                </div>
             </form>
-            <p style={{ fontSize: '12px', color: '#888', marginTop: '10px' }}>
-                * User must already have an account on the platform.
-            </p>
-        </div>
+        </section>
     );
 };

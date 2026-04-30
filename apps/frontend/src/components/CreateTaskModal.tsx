@@ -57,25 +57,75 @@ export const CreateTaskModal = ({ isOpen, onClose, projectId, members, existingT
     };
 
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-            <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', width: '400px' }}>
-                <h2>{existingTask ? 'Edit Task' : 'Create New Task'}</h2>
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '15px' }}>
-                    <input type="text" placeholder="Task Title" value={title} onChange={(e) => setTitle(e.target.value)} required style={{ padding: '10px' }} />
-                    <textarea placeholder="Description (Optional)" value={description} onChange={(e) => setDescription(e.target.value)} style={{ padding: '10px', minHeight: '80px' }} />
-                    <input type="datetime-local" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required style={{ padding: '10px' }} />
-                    
-                    <select value={assigneeId} onChange={(e) => setAssigneeId(e.target.value)} style={{ padding: '10px' }}>
-                        <option value="">-- Unassigned --</option>
-                        {members.map((m: any) => (
-                            <option key={m.user.id} value={m.user.id}>{m.user.name} ({m.user.email})</option>
-                        ))}
-                    </select>
+        <div className="modalOverlay" role="presentation">
+            <div className="modal card" role="dialog" aria-modal="true" aria-label={existingTask ? 'Edit task' : 'Create task'}>
+                <div className="modalHeader">
+                    <h2 className="h2">{existingTask ? 'Edit task' : 'Create task'}</h2>
+                    <button type="button" onClick={onClose} className="btn btn--ghost btn--sm" aria-label="Close">
+                        Close
+                    </button>
+                </div>
 
-                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                        <button type="button" onClick={onClose} style={{ padding: '8px 15px', cursor: 'pointer' }}>Cancel</button>
-                        <button type="submit" style={{ padding: '8px 15px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                            {existingTask ? 'Save Changes' : 'Create Task'}
+                <form onSubmit={handleSubmit} className="modalForm">
+                    <div className="field">
+                        <label className="label" htmlFor="taskTitle">Title</label>
+                        <input
+                            id="taskTitle"
+                            type="text"
+                            placeholder="e.g. Draft project brief"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                            className="input"
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label className="label" htmlFor="taskDesc">Description</label>
+                        <textarea
+                            id="taskDesc"
+                            placeholder="Optional"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="textarea"
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label className="label" htmlFor="taskDue">Due date</label>
+                        <input
+                            id="taskDue"
+                            type="datetime-local"
+                            value={dueDate}
+                            onChange={(e) => setDueDate(e.target.value)}
+                            required
+                            className="input"
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label className="label" htmlFor="taskAssignee">Assignee</label>
+                        <select
+                            id="taskAssignee"
+                            value={assigneeId}
+                            onChange={(e) => setAssigneeId(e.target.value)}
+                            className="select"
+                        >
+                            <option value="">Unassigned</option>
+                            {members.map((m: any) => (
+                                <option key={m.user.id} value={m.user.id}>
+                                    {m.user.name} ({m.user.email})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="modalActions">
+                        <button type="button" onClick={onClose} className="btn btn--ghost">
+                            Cancel
+                        </button>
+                        <button type="submit" className="btn btn--primary">
+                            {existingTask ? 'Save changes' : 'Create task'}
                         </button>
                     </div>
                 </form>

@@ -16,7 +16,13 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
 function App() {
   return (
     <>
-    <Toaster position="top-right" />
+    <Toaster
+      position="top-right"
+      toastOptions={{
+        className: 'appToast',
+        duration: 3500,
+      }}
+    />
     <Router>
       <Routes>
         {/* Public Routes */}

@@ -84,88 +84,192 @@ export const ProjectDetail = () => {
     if (!project) return <p>Loading...</p>;
 
     return (
-        <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px' }}>
-            <button onClick={() => navigate('/')} style={{ marginBottom: '20px', padding: '5px 10px', cursor: 'pointer' }}>&larr; Back to Dashboard</button>
-            
-            {/* Project Header */}
-            <div style={{ backgroundColor: '#f8f9fa', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <main className="page">
+            <nav className="breadcrumbBar" aria-label="Project navigation">
+                <button onClick={() => navigate('/')} className="btn btn--ghost btn--sm">
+                    ← Back
+                </button>
+            </nav>
+
+            <header className="projectHeader card">
+                <div className="projectHeader__row">
                     {isEditingProject ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
-                            <input value={editName} onChange={(e) => setEditName(e.target.value)} style={{ padding: '8px', fontSize: '20px' }} />
-                            <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} style={{ padding: '8px' }} />
-                            <div>
-                                <button onClick={handleSaveProject} style={{ padding: '8px 15px', backgroundColor: '#28a745', color: 'white', border: 'none', marginRight: '10px' }}>Save</button>
-                                <button onClick={() => setIsEditingProject(false)} style={{ padding: '8px 15px' }}>Cancel</button>
+                        <div className="projectEdit">
+                            <div className="field">
+                                <label className="label" htmlFor="projectName">Project name</label>
+                                <input
+                                    id="projectName"
+                                    value={editName}
+                                    onChange={(e) => setEditName(e.target.value)}
+                                    className="input input--lg"
+                                />
+                            </div>
+                            <div className="field">
+                                <label className="label" htmlFor="projectDesc">Description</label>
+                                <textarea
+                                    id="projectDesc"
+                                    value={editDesc}
+                                    onChange={(e) => setEditDesc(e.target.value)}
+                                    className="textarea"
+                                />
+                            </div>
+                            <div className="rowActions">
+                                <button onClick={handleSaveProject} className="btn btn--primary">
+                                    Save
+                                </button>
+                                <button onClick={() => setIsEditingProject(false)} className="btn btn--ghost">
+                                    Cancel
+                                </button>
                             </div>
                         </div>
                     ) : (
-                        <div style={{ width: '100%' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <h1 style={{ margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    {project.name}
-                                    <span style={{ fontSize: '12px', padding: '4px 8px', backgroundColor: role === 'Admin' ? '#dc3545' : '#6c757d', color: 'white', borderRadius: '12px' }}>{role}</span>
-                                </h1>
+                        <div className="projectHeader__content">
+                            <div className="projectHeader__top">
+                                <div className="projectHeader__title">
+                                    <h1 className="h1 h1--compact">{project.name}</h1>
+                                    <span className={`badge ${role === 'Admin' ? 'badge--danger' : 'badge--neutral'}`}>
+                                        {role}
+                                    </span>
+                                </div>
+
                                 {role === 'Admin' && (
-                                    <div style={{ display: 'flex', gap: '10px' }}>
-                                        <button onClick={() => setIsEditingProject(true)} style={{ padding: '5px 10px' }}>Edit</button>
-                                        <button onClick={handleDeleteProject} style={{ padding: '5px 10px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px' }}>Delete Project</button>
+                                    <div className="rowActions">
+                                        <button onClick={() => setIsEditingProject(true)} className="btn btn--ghost btn--sm">
+                                            Edit
+                                        </button>
+                                        <button onClick={handleDeleteProject} className="btn btn--danger btn--sm">
+                                            Delete project
+                                        </button>
                                     </div>
                                 )}
                             </div>
-                            <p style={{ color: '#666' }}>{project.description}</p>
+
+                            <p className="muted">{project.description || 'No description provided.'}</p>
                         </div>
                     )}
                 </div>
-            </div>
+            </header>
 
-            {/* Tasks Section */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h2>Project Tasks</h2>
-                {role === 'Admin' && <button onClick={() => { setTaskToEdit(null); setIsModalOpen(true); }} style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}>+ Add Task</button>}
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                {tasks.length === 0 ? <p>No tasks yet.</p> : tasks.map(task => (
-                    <div key={task.id} style={{ border: '1px solid #ddd', padding: '15px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                            <h3 style={{ margin: '0 0 5px 0' }}>{task.title}</h3>
-                            <p style={{ margin: 0, color: '#666', fontSize: '14px' }}>Due: {new Date(task.due_date).toLocaleDateString()}</p>
-                        </div>
-                        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                            {role === 'Admin' && (
-                                <>
-                                    <button onClick={() => { setTaskToEdit(task); setIsModalOpen(true); }} style={{ padding: '5px 10px' }}>Edit</button>
-                                    <button onClick={() => handleDeleteTask(task.id)} style={{ padding: '5px 10px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px' }}>Delete</button>
-                                </>
-                            )}
-                            <select value={task.status} onChange={(e) => handleStatusChange(task.id, e.target.value)} style={{ padding: '8px', borderRadius: '4px' }}>
-                                <option value="To Do">To Do</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Done">Done</option>
-                            </select>
-                        </div>
+            <section className="section" aria-label="Tasks">
+                <div className="sectionHeader">
+                    <div>
+                        <h2 className="h2">Tasks</h2>
+                        <p className="muted">Track work across statuses and due dates.</p>
                     </div>
-                ))}
-            </div>
 
-            {/* Team Members Section */}
-            <div style={{ marginTop: '40px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
-                <h2>Team Members</h2>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
+                    <div className="sectionHeader__actions">
+                        {role === 'Admin' && (
+                            <button
+                                onClick={() => { setTaskToEdit(null); setIsModalOpen(true); }}
+                                className="btn btn--primary"
+                            >
+                                Add task
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {tasks.length === 0 ? (
+                    <div className="emptyState" role="status">
+                        <div className="emptyState__title">No tasks yet</div>
+                        <div className="emptyState__body">Create a task to start organizing this project.</div>
+                    </div>
+                ) : (
+                    <div className="stack">
+                        {tasks.map(task => (
+                            <article key={task.id} className="taskCard card">
+                                <div className="taskCard__content">
+                                    <h3 className="h3">{task.title}</h3>
+                                    <p className="muted small">
+                                        Due: {new Date(task.due_date).toLocaleDateString()}
+                                    </p>
+                                </div>
+
+                                <div className="taskCard__meta">
+                                    {role === 'Admin' && (
+                                        <div className="rowActions">
+                                            <button
+                                                onClick={() => { setTaskToEdit(task); setIsModalOpen(true); }}
+                                                className="btn btn--ghost btn--sm"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteTask(task.id)}
+                                                className="btn btn--danger btn--sm"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    <div className="fieldInline">
+                                        <label className="label srOnly" htmlFor={`status-${task.id}`}>Status</label>
+                                        <select
+                                            id={`status-${task.id}`}
+                                            value={task.status}
+                                            onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                                            className="select"
+                                        >
+                                            <option value="To Do">To Do</option>
+                                            <option value="In Progress">In Progress</option>
+                                            <option value="Done">Done</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                )}
+            </section>
+
+            <section className="section" aria-label="Team members">
+                <div className="sectionHeader">
+                    <div>
+                        <h2 className="h2">Team Members</h2>
+                        <p className="muted">People with access to this project.</p>
+                    </div>
+                </div>
+
+                <ul className="memberList">
                     {project.members.map((m: any) => (
-                        <li key={m.user.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', backgroundColor: '#fdfdfd', border: '1px solid #ddd', marginBottom: '10px', borderRadius: '4px' }}>
-                            <span><strong>{m.user.name}</strong> ({m.user.email}) - {m.role}</span>
-                            {role === 'Admin' && m.role !== 'Admin' && (
-                                <button onClick={() => handleRemoveMember(m.user.id)} style={{ padding: '4px 8px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', fontSize: '12px' }}>Remove</button>
-                            )}
+                        <li key={m.user.id} className="memberRow card">
+                            <div className="memberRow__identity">
+                                <div className="memberRow__name">{m.user.name}</div>
+                                <div className="memberRow__meta muted small">
+                                    {m.user.email} · {m.role}
+                                </div>
+                            </div>
+
+                            <div className="memberRow__actions">
+                                {role === 'Admin' && m.role !== 'Admin' && (
+                                    <button
+                                        onClick={() => handleRemoveMember(m.user.id)}
+                                        className="btn btn--danger btn--sm"
+                                    >
+                                        Remove
+                                    </button>
+                                )}
+                            </div>
                         </li>
                     ))}
                 </ul>
-                {role === 'Admin' && <MemberInviteSection projectId={projectId!} onMemberAdded={fetchData} />}
-            </div>
 
-            <CreateTaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} projectId={projectId!} members={project.members} existingTask={taskToEdit} onSuccess={() => { setIsModalOpen(false); fetchData(); }} />
-        </div>
+                {role === 'Admin' && (
+                    <div className="card card--padded">
+                        <MemberInviteSection projectId={projectId!} onMemberAdded={fetchData} />
+                    </div>
+                )}
+            </section>
+
+            <CreateTaskModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                projectId={projectId!}
+                members={project.members}
+                existingTask={taskToEdit}
+                onSuccess={() => { setIsModalOpen(false); fetchData(); }}
+            />
+        </main>
     );
 };

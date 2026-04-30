@@ -30,32 +30,53 @@ export const Login = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h2>Login to Task Manager</h2>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '10px' }}>
-                <input 
-                    type="email" 
-                    placeholder="Email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                    required 
-                    style={{ padding: '10px' }}
-                />
-                <input 
-                    type="password" 
-                    placeholder="Password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
-                    style={{ padding: '10px' }}
-                />
-                <button type="submit" style={{ padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                    Login
-                </button>
-            </form>
-            <p style={{ marginTop: '15px', textAlign: 'center' }}>
-                Don't have an account? <Link to="/signup">Sign up</Link>
-            </p>
-        </div>
+        <main className="authShell">
+            <section className="authCard card" aria-label="Login">
+                <header className="authHeader">
+                    <h1 className="h1">Sign in</h1>
+                    <p className="muted">Welcome back. Please enter your details.</p>
+                </header>
+
+                <form onSubmit={handleSubmit} className="formStack">
+                    <div className="field">
+                        <label className="label" htmlFor="loginEmail">Email</label>
+                        <input
+                            id="loginEmail"
+                            type="email"
+                            placeholder="name@company.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            autoComplete="email"
+                            className="input"
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label className="label" htmlFor="loginPassword">Password</label>
+                        <input
+                            id="loginPassword"
+                            type="password"
+                            placeholder="Your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            autoComplete="current-password"
+                            className="input"
+                        />
+                    </div>
+
+                    <button type="submit" className="btn btn--primary authCta">
+                        Sign in
+                    </button>
+                </form>
+
+                <footer className="authFooter">
+                    <p className="muted small">
+                        Don&apos;t have an account? <Link className="link" to="/signup">Create one</Link>
+                    </p>
+                </footer>
+            </section>
+        </main>
     );
 };

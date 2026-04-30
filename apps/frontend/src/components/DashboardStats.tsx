@@ -30,44 +30,46 @@ export const DashboardStats = () => {
     ];
 
     return (
-        <div style={{ marginBottom: '40px' }}>
-            {/* Stat Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px', marginBottom: '30px' }}>
-                <div style={{ padding: '20px', borderRadius: '8px', backgroundColor: '#f8f9fa', borderLeft: '4px solid #6c757d', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                    <h4 style={{ margin: '0 0 10px 0', color: '#6c757d' }}>Total Tasks</h4>
-                    <h2 style={{ margin: 0 }}>{stats.total_assigned}</h2>
-                </div>
-                <div style={{ padding: '20px', borderRadius: '8px', backgroundColor: '#f8f9fa', borderLeft: '4px solid #ffc107', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                    <h4 style={{ margin: '0 0 10px 0', color: '#6c757d' }}>Pending</h4>
-                    <h2 style={{ margin: 0 }}>{stats.pending}</h2>
-                </div>
-                <div style={{ padding: '20px', borderRadius: '8px', backgroundColor: '#f8f9fa', borderLeft: '4px solid #007bff', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                    <h4 style={{ margin: '0 0 10px 0', color: '#6c757d' }}>In Progress</h4>
-                    <h2 style={{ margin: 0 }}>{stats.active}</h2>
-                </div>
-                <div style={{ padding: '20px', borderRadius: '8px', backgroundColor: '#f8f9fa', borderLeft: '4px solid #28a745', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                    <h4 style={{ margin: '0 0 10px 0', color: '#6c757d' }}>Completed</h4>
-                    <h2 style={{ margin: 0 }}>{stats.completed}</h2>
-                </div>
+        <section className="stats">
+            <div className="statsGrid" aria-label="Task summary">
+                <article className="statCard card">
+                    <div className="statLabel muted small">Total Tasks</div>
+                    <div className="statValue">{stats.total_assigned}</div>
+                </article>
+                <article className="statCard card">
+                    <div className="statLabel muted small">Pending</div>
+                    <div className="statValue">{stats.pending}</div>
+                </article>
+                <article className="statCard card">
+                    <div className="statLabel muted small">In Progress</div>
+                    <div className="statValue">{stats.active}</div>
+                </article>
+                <article className="statCard card">
+                    <div className="statLabel muted small">Completed</div>
+                    <div className="statValue">{stats.completed}</div>
+                </article>
             </div>
 
-            {/* Chart */}
-            <div style={{ height: '300px', backgroundColor: '#fff', padding: '20px', borderRadius: '8px', border: '1px solid #eee' }}>
-                <h3 style={{ marginTop: 0, marginBottom: '20px', color: '#333' }}>Task Distribution</h3>
-                <ResponsiveContainer width="100%" height="100%">
-                    {/* Notice below: No quotes around {chartData}, {false}, etc. */}
-                    <BarChart data={chartData}>
-                        <XAxis dataKey="name" />
-                        <YAxis allowDecimals={false} />
-                        <Tooltip />
-                        <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                            {chartData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                        </Bar>
-                    </BarChart>
-                </ResponsiveContainer>
+            <div className="card card--padded chartCard" aria-label="Task distribution chart">
+                <div className="chartHeader">
+                    <h3 className="h2">Task Distribution</h3>
+                    <p className="muted small">Overview of work across statuses.</p>
+                </div>
+                <div className="chartBody">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={chartData}>
+                            <XAxis dataKey="name" />
+                            <YAxis allowDecimals={false} />
+                            <Tooltip />
+                            <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                                {chartData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
-        </div>
+        </section>
     );
 };

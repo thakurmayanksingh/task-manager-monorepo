@@ -33,41 +33,69 @@ export const Signup = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h2>Create an Account</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <input 
-                    type="text" 
-                    placeholder="Full Name" 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)} 
-                    required 
-                    style={{ padding: '10px' }}
-                />
-                <input 
-                    type="email" 
-                    placeholder="Email" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                    required 
-                    style={{ padding: '10px' }}
-                />
-                <input 
-                    type="password" 
-                    placeholder="Password (min 6 chars)" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
-                    style={{ padding: '10px' }}
-                />
-                <button type="submit" style={{ padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                    Sign Up
-                </button>
-            </form>
-            <p style={{ marginTop: '15px', textAlign: 'center' }}>
-                Already have an account? <Link to="/login">Login</Link>
-            </p>
-        </div>
+        <main className="authShell">
+            <section className="authCard card" aria-label="Create account">
+                <header className="authHeader">
+                    <h1 className="h1">Create account</h1>
+                    <p className="muted">Start organizing work with your team in minutes.</p>
+                </header>
+
+                {error && <p className="modalError" role="alert">{error}</p>}
+
+                <form onSubmit={handleSubmit} className="formStack">
+                    <div className="field">
+                        <label className="label" htmlFor="signupName">Full name</label>
+                        <input
+                            id="signupName"
+                            type="text"
+                            placeholder="Your name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            autoComplete="name"
+                            className="input"
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label className="label" htmlFor="signupEmail">Email</label>
+                        <input
+                            id="signupEmail"
+                            type="email"
+                            placeholder="name@company.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            autoComplete="email"
+                            className="input"
+                        />
+                    </div>
+
+                    <div className="field">
+                        <label className="label" htmlFor="signupPassword">Password</label>
+                        <input
+                            id="signupPassword"
+                            type="password"
+                            placeholder="At least 6 characters"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            autoComplete="new-password"
+                            className="input"
+                        />
+                    </div>
+
+                    <button type="submit" className="btn btn--primary authCta">
+                        Create account
+                    </button>
+                </form>
+
+                <footer className="authFooter">
+                    <p className="muted small">
+                        Already have an account? <Link className="link" to="/login">Sign in</Link>
+                    </p>
+                </footer>
+            </section>
+        </main>
     );
 };
