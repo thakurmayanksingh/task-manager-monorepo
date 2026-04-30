@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
+import projectRoutes from './routes/project.routes';
 
 // Load environment variables from .env
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // Mount API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
 
 // Simple Health Check Endpoint
 app.get('/health', (req, res) => {
