@@ -3,7 +3,12 @@ import { z } from 'zod';
 export const createProjectSchema = z.object({
     name: z.string().min(1, "Project name is required"),
     description: z.string().optional()
-}).strict(); // Prevents malicious injection of role updates via standard payloads
+}).strict();
+
+export const updateProjectSchema = z.object({
+    name: z.string().min(1).optional(),
+    description: z.string().optional()
+}).strict();
 
 export const createTaskSchema = z.object({
     title: z.string().min(1, "Task title is required"),
@@ -14,7 +19,9 @@ export const createTaskSchema = z.object({
 
 export const updateTaskSchema = z.object({
     title: z.string().min(1).optional(),
-    status: z.enum(['TODO', 'IN_PROGRESS', 'DONE']).optional(), // Matches our Prisma Enums
+    // This exact line fixes your crash! It perfectly matches the frontend dropdown values.
+    status: z.enum(['To Do', 'In Progress', 'Done']).optional(), 
     due_date: z.string().datetime().optional(),
-    assignee_id: z.string().uuid().optional().nullable()
+    assignee_id: z.string().uuid().optional().nullable(),
+    description: z.string().optional()
 }).strict();

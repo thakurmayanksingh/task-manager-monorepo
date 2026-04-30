@@ -27,7 +27,6 @@ export const createTask = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Manually map fields to force undefined -> null conversion
         const task = await prisma.task.create({
             data: {
                 title: parsed.data.title,
@@ -47,7 +46,7 @@ export const createTask = async (req: AuthRequest, res: Response): Promise<void>
 export const updateTask = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const taskId = req.params.taskId as string;
-        const role = req.userRole; // Attached by requireRole middleware
+        const role = req.userRole; 
         const userId = req.user!.id;
 
         const parsed = updateTaskSchema.safeParse(req.body);
@@ -62,8 +61,17 @@ export const updateTask = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Use 'any' to bypass overly strict TS compilation. Zod already guaranteed runtime safety!
         let updatePayload: any = { ...parsed.data };
+
+        // FIXED: Map the frontend string to the exact Prisma Enum keys expected by schema.prisma
+        if (updatePayload.status) {
+            const statusMap: Record<string, string> = {
+                'To Do': 'TODO',
+                'In Progress': 'IN_PROGRESS',
+                'Done': 'DONE'
+            };
+            updatePayload.status = statusMap[updatePayload.status];
+        }
 
         // Granular RBAC enforcement based on blueprint
         if (role === 'Member') {
@@ -72,7 +80,7 @@ export const updateTask = async (req: AuthRequest, res: Response): Promise<void>
                 return;
             }
             // Strip any fields other than status from the request payload
-            updatePayload = { status: parsed.data.status };
+            updatePayload = { status: updatePayload.status };
         }
 
         const updatedTask = await prisma.task.update({
@@ -82,6 +90,7 @@ export const updateTask = async (req: AuthRequest, res: Response): Promise<void>
 
         res.status(200).json({ success: true, data: updatedTask });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, error: 'Failed to update task' });
     }
 };
@@ -90,7 +99,7 @@ export const deleteTask = async (req: AuthRequest, res: Response): Promise<void>
     try {
         const taskId = req.params.taskId as string;
         await prisma.task.delete({ where: { id: taskId } });
-        res.status(204).send(); // 204 No Content
+        res.status(204).send(); 
     } catch (error) {
         res.status(500).json({ success: false, error: 'Failed to delete task' });
     }
