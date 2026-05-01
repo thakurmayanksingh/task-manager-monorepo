@@ -9,7 +9,6 @@ interface User {
     accessToken: string;
 }
 
-// Define the shape of the Context
 interface AuthContextType {
     user: User | null;
     login: (data: User) => void;
@@ -20,16 +19,26 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+    // 1. Initialize state from localStorage so it survives refreshes!
+    const [user, setUser] = useState<User | null>(() => {
+        const savedUser = localStorage.getItem('task_manager_user');
+        if (savedUser) {
+            const parsedUser = JSON.parse(savedUser);
+            // Re-attach the token to Axios immediately on page load
+            api.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.accessToken}`;
+            return parsedUser;
+        }
+        return null;
+    });
 
-    // Call this when the user successfully logs in or signs up
+    // 2. Save to localStorage on login
     const login = (userData: User) => {
         setUser(userData);
-        // Attach the short-lived access token to all future Axios requests
+        localStorage.setItem('task_manager_user', JSON.stringify(userData));
         api.defaults.headers.common['Authorization'] = `Bearer ${userData.accessToken}`;
     };
 
-    // Call this to clear state and tell the backend to delete the secure cookie
+    // 3. Clear from localStorage on logout
     const logout = async () => {
         try {
             await api.post('/auth/logout');
@@ -37,6 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.error('Logout failed', error);
         } finally {
             setUser(null);
+            localStorage.removeItem('task_manager_user'); // Wipe memory
             delete api.defaults.headers.common['Authorization'];
         }
     };

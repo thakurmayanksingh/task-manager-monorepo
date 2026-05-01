@@ -19,6 +19,12 @@ enum TaskStatus {
   DONE        @map("Done")
 }
 
+enum TaskPriority {
+  LOW    @map("Low")
+  MEDIUM @map("Medium")
+  HIGH   @map("High")
+}
+
 model User {
   id            String   @id @default(uuid()) @db.Uuid
   email         String   @unique @db.VarChar(255)
@@ -68,6 +74,7 @@ model Task {
   title       String     @db.VarChar(255)
   description String?    @db.Text
   status      TaskStatus @default(TODO)
+  priority    TaskPriority @default(LOW)
   assignee_id String?    @db.Uuid
   due_date    DateTime   @db.Timestamptz
   created_at  DateTime   @default(now()) @db.Timestamptz

@@ -28,7 +28,18 @@ export const ProjectDetail = () => {
                 setEditDesc(projRes.data.data.project.description || '');
             }
             const taskRes = await api.get(`/projects/${projectId}/tasks`);
-            if (taskRes.data.success) setTasks(taskRes.data.data);
+            if (taskRes.data.success) {
+                // Translate the strict database enums back to readable frontend strings
+                const mappedTasks = taskRes.data.data.map((t: any) => ({
+                    ...t,
+                    status: t.status === 'TODO' ? 'To Do' : 
+                            t.status === 'IN_PROGRESS' ? 'In Progress' : 
+                            t.status === 'DONE' ? 'Done' : t.status,
+                    priority: t.priority === 'HIGH' ? 'High' : 
+                              t.priority === 'MEDIUM' ? 'Medium' : 'Low'
+                }));
+                setTasks(mappedTasks);
+            }
         } catch (error) {
             toast.error("Failed to load project data");
         }
@@ -179,8 +190,20 @@ export const ProjectDetail = () => {
                         {tasks.map(task => (
                             <article key={task.id} className="taskCard card">
                                 <div className="taskCard__content">
-                                    <h3 className="h3">{task.title}</h3>
-                                    <p className="muted small">
+                                    {/* INJECTED PRIORITY BADGE HERE */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                                        <h3 className="h3" style={{ margin: 0 }}>{task.title}</h3>
+                                        <span style={{ 
+                                            fontSize: '12px', 
+                                            padding: '3px 8px', 
+                                            borderRadius: '12px', 
+                                            color: 'white',
+                                            backgroundColor: task.priority === 'High' ? '#ef4444' : task.priority === 'Medium' ? '#f59e0b' : '#10b981' 
+                                        }}>
+                                            {task.priority || 'Low'}
+                                        </span>
+                                    </div>
+                                    <p className="muted small" style={{ margin: 0 }}>
                                         Due: {new Date(task.due_date).toLocaleDateString()}
                                     </p>
                                 </div>

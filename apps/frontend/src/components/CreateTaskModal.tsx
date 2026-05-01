@@ -6,7 +6,7 @@ interface CreateTaskModalProps {
     isOpen: boolean;
     onClose: () => void;
     projectId: string;
-    members: any[]; // <--- THIS CLEARS THE PROJECTDETAIL ERROR!
+    members: any[]; 
     existingTask?: any;
     onSuccess: () => void;
 }
@@ -16,18 +16,20 @@ export const CreateTaskModal = ({ isOpen, onClose, projectId, members, existingT
     const [description, setDescription] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [assigneeId, setAssigneeId] = useState('');
+    const [priority, setPriority] = useState('Low');
 
     // Pre-fill data if we are editing an existing task
     useEffect(() => {
         if (existingTask) {
             setTitle(existingTask.title);
             setDescription(existingTask.description || '');
+            setPriority(existingTask?.priority || 'Low');
             setAssigneeId(existingTask.assignee_id || '');
             if (existingTask.due_date) {
                 setDueDate(new Date(existingTask.due_date).toISOString().slice(0, 16));
             }
         } else {
-            setTitle(''); setDescription(''); setDueDate(''); setAssigneeId('');
+            setTitle(''); setDescription(''); setDueDate(''); setAssigneeId(''); setPriority('Low');
         }
     }, [existingTask, isOpen]);
 
@@ -40,7 +42,8 @@ export const CreateTaskModal = ({ isOpen, onClose, projectId, members, existingT
             const payload = {
                 title, description,
                 due_date: new Date(dueDate).toISOString(),
-                assignee_id: assigneeId === '' ? null : assigneeId 
+                assignee_id: assigneeId === '' ? null : assigneeId,
+                priority
             };
 
             if (existingTask) {
@@ -117,6 +120,21 @@ export const CreateTaskModal = ({ isOpen, onClose, projectId, members, existingT
                                     {m.user.name} ({m.user.email})
                                 </option>
                             ))}
+                        </select>
+                    </div>
+
+                    {/* MOVED PRIORITY INTO ITS OWN FIELD FOR PROPER UI STYLING */}
+                    <div className="field">
+                        <label className="label" htmlFor="taskPriority">Priority</label>
+                        <select 
+                            id="taskPriority"
+                            value={priority} 
+                            onChange={(e) => setPriority(e.target.value)} 
+                            className="select"
+                        >
+                            <option value="Low">Low Priority</option>
+                            <option value="Medium">Medium Priority</option>
+                            <option value="High">High Priority</option>
                         </select>
                     </div>
 

@@ -14,7 +14,8 @@ export const createTaskSchema = z.object({
     title: z.string().min(1, "Task title is required"),
     description: z.string().optional(),
     due_date: z.string().datetime("Must be a valid ISO 8601 date string"),
-    assignee_id: z.string().uuid("Invalid user ID").optional().nullable()
+    assignee_id: z.string().uuid("Invalid user ID").optional().nullable(),
+    priority: z.enum(['Low', 'Medium', 'High']).optional()
 }).strict();
 
 export const updateTaskSchema = z.object({
@@ -23,5 +24,6 @@ export const updateTaskSchema = z.object({
     status: z.enum(['To Do', 'In Progress', 'Done']).optional(), 
     due_date: z.string().datetime().optional(),
     assignee_id: z.string().uuid().optional().nullable(),
-    description: z.string().optional()
+    description: z.string().optional(),
+    priority: z.enum(['Low', 'Medium', 'High']).optional()
 }).strict();

@@ -33,7 +33,10 @@ export const createTask = async (req: AuthRequest, res: Response): Promise<void>
                 due_date: parsed.data.due_date,
                 description: parsed.data.description ?? null,
                 assignee_id: parsed.data.assignee_id ?? null,
-                project_id: projectId
+                project_id: projectId,
+                priority: parsed.data.priority === 'High' ? 'HIGH' : 
+                          parsed.data.priority === 'Medium' ? 'MEDIUM' : 
+                          'LOW'
             }
         });
 
@@ -71,6 +74,15 @@ export const updateTask = async (req: AuthRequest, res: Response): Promise<void>
                 'Done': 'DONE'
             };
             updatePayload.status = statusMap[updatePayload.status];
+        }
+
+        if (updatePayload.priority) {
+            const priorityMap: Record<string, string> = {
+                'Low': 'LOW',
+                'Medium': 'MEDIUM',
+                'High': 'HIGH'
+            };
+            updatePayload.priority = priorityMap[updatePayload.priority];
         }
 
         // Granular RBAC enforcement based on blueprint
