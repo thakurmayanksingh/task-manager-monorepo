@@ -18,16 +18,20 @@ export const Signup = () => {
         try {
             const response = await api.post('/auth/signup', { name, email, password });
             if (response.data.success) {
-                login(response.data.data); // Automatically log them in after signup
+                login(response.data.data);
                 navigate('/');
             }
         } catch (err: any) {
-            // Check if it's our Zod validation error or a generic one
-            const errorMessage = err.response?.data?.error;
-            if (typeof errorMessage === 'string') {
-                setError(errorMessage);
+            console.error("Full Error:", err); // Logs to your browser console
+            
+            if (err.response) {
+                // The server responded with a status outside the 2xx range
+                setError(err.response.data.error || 'Server error occurred during signup.');
+            } else if (err.request) {
+                // The request was made but no response was received (CORS or Network down)
+                setError('Network error: Could not reach the server. Check CORS or API URL.');
             } else {
-                setError('Invalid input. Password must be at least 6 characters.');
+                setError('An unexpected error occurred. Please try again.');
             }
         }
     };
