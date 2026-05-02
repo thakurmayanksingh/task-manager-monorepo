@@ -13,8 +13,6 @@
 
 **🚀 Live Demo:** [https://task-manager-monorepo-frontend-production.up.railway.app/](https://task-manager-monorepo-frontend-production.up.railway.app/)
 
-**📹 Demo Video:** [Insert Demo Video Link Here]
-
 **🐙 GitHub Repo:** [https://github.com/thakurmayanksingh/task-manager-monorepo](https://github.com/thakurmayanksingh/task-manager-monorepo)
 
 </div>
